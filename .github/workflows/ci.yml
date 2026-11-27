@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: stable
+      - name: go.mod and go.sum are tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+      - name: Vet
+        run: go vet ./...
+      - name: Test
+        run: go test ./...
+      - name: Build and check the demo repo
+        run: make check
+      - name: Lint install.sh
+        run: shellcheck install.sh
+
+  # Builds every release artifact without publishing, then runs install.sh against them,
+  # so a broken release config or installer shows up on the pull request and not on the tag.
+  snapshot:
+    name: Release dry run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: "~> v2"
+          args: check
+        env:
+          HOMEBREW_TAP_TOKEN: ""
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: "~> v2"
+          args: release --snapshot --clean --skip=publish
+        env:
+          HOMEBREW_TAP_TOKEN: ""
+      - name: Install from the snapshot with install.sh
+        run: |
+          version=$(jq -r .version dist/metadata.json)
+          LIVERY_VERSION="v${version}" \
+          LIVERY_BASE_URL="file://${PWD}/dist" \
+          LIVERY_INSTALL_DIR="${RUNNER_TEMP}/bin" \
+            sh install.sh
+          "${RUNNER_TEMP}/bin/liv" version | grep -F "${version}"
+      - name: install.sh refuses a tampered download
+        run: |
+          version=$(jq -r .version dist/metadata.json)
+          echo tampered >> "dist/livery_${version}_linux_amd64.tar.gz"
+          if LIVERY_VERSION="v${version}" LIVERY_BASE_URL="file://${PWD}/dist" \
+             LIVERY_INSTALL_DIR="${RUNNER_TEMP}/bad" sh install.sh; then
+            echo "install.sh installed an archive that does not match checksums.txt" >&2
+            exit 1
+          fi
+          test ! -e "${RUNNER_TEMP}/bad/liv"
