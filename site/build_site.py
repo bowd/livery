@@ -18,9 +18,38 @@ DOCS_PAGES = [
     ("prompt-guidelines", "Prompt & Skill Guidelines", "prompt-guidelines.md"),
 ]
 
+PIPELINE_HTML = """
+<div class="pipeline-diagram">
+  <div class="pipe-col">
+    <strong>Control Plane · <code>~/.local/share/livery</code></strong>
+    <div><code>catalog/skillshare/</code> · Library</div>
+    <div><code>profiles/*.toml</code> · Matrix</div>
+    <div><code>prompts/fragments/</code> · Ranked</div>
+    <div><code>launchers/*.toml</code> · Profiles</div>
+    <div><code>env-overrides/*.yaml</code> · Per-host</div>
+  </div>
+  <div class="pipe-mid mono">
+    <span class="pill pill-blue">liv sync ──▶</span>
+    <span class="pill pill-green">◀── liv pull</span>
+  </div>
+  <div class="pipe-col">
+    <strong>Each Host (Local or SSH)</strong>
+    <div><code>skillshare</code> repo (<code>livery-base</code> tag)</div>
+    <div><code>~/.claude/CLAUDE.md</code> &amp; <code>~/.codex/AGENTS.md</code></div>
+    <div>Shadow Homes &amp; Herdr templates</div>
+    <div>Claude · Codex · OpenCode · Agy · Pi</div>
+  </div>
+</div>
+"""
+
+
+def slugify(text: str) -> str:
+    t = re.sub(r"`([^`]+)`", r"\1", text.lower())
+    t = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+    return t or "section"
+
 
 def inline_md(text: str) -> str:
-    # Extract inline code spans into placeholders first so bold/links wrapping `code` parse cleanly!
     codes = []
 
     def save_code(m):
@@ -42,9 +71,10 @@ def inline_md(text: str) -> str:
     return s
 
 
-def md_to_html(md_text: str) -> str:
+def md_to_html(md_text: str):
     lines = md_text.splitlines()
     html_out = []
+    toc = []
     in_code = False
     code_lang = ""
     code_buf = []
@@ -71,7 +101,11 @@ def md_to_html(md_text: str) -> str:
             return
         header = table_rows[0]
         body = [r for r in table_rows[1:] if not all(set(c.strip()) <= set("-: ") for c in r)]
-        html_out.append("<table><thead><tr>" + "".join(f"<th>{inline_md(c.strip())}</th>" for c in header) + "</tr></thead><tbody>")
+        html_out.append(
+            "<table><thead><tr>"
+            + "".join(f"<th>{inline_md(c.strip())}</th>" for c in header)
+            + "</tr></thead><tbody>"
+        )
         for row in body:
             html_out.append("<tr>" + "".join(f"<td>{inline_md(c.strip())}</td>" for c in row) + "</tr>")
         html_out.append("</tbody></table>")
@@ -87,8 +121,11 @@ def md_to_html(md_text: str) -> str:
                 code_buf = []
             else:
                 in_code = False
-                cls = f' class="language-{html.escape(code_lang)}"' if code_lang else ""
-                html_out.append(f"<pre><code{cls}>{html.escape(chr(10).join(code_buf))}</code></pre>")
+                if code_lang == "mermaid":
+                    html_out.append(PIPELINE_HTML)
+                else:
+                    cls = f' class="language-{html.escape(code_lang)}"' if code_lang else ""
+                    html_out.append(f"<pre><code{cls}>{html.escape(chr(10).join(code_buf))}</code></pre>")
             continue
         if in_code:
             code_buf.append(raw)
@@ -103,7 +140,6 @@ def md_to_html(md_text: str) -> str:
         if s.startswith("|") and s.endswith("|"):
             close_lists()
             in_table = True
-            # Split unescaped pipes
             cells = [c.replace(r"\|", "|") for c in re.split(r"(?<!\\)\|", s[1:-1])]
             table_rows.append(cells)
             continue
@@ -119,7 +155,13 @@ def md_to_html(md_text: str) -> str:
         if m_h:
             close_lists()
             lvl = len(m_h.group(1))
-            html_out.append(f"<h{lvl}>{inline_md(m_h.group(2))}</h{lvl}>")
+            raw_title = m_h.group(2)
+            hid = slugify(raw_title)
+            if lvl == 2:
+                toc.append((hid, re.sub(r"`([^`]+)`", r"\1", raw_title)))
+                html_out.append(f'<h2 id="{hid}">{inline_md(raw_title)}</h2>')
+            else:
+                html_out.append(f"<h{lvl}>{inline_md(raw_title)}</h{lvl}>")
             continue
 
         m_ul = re.match(r"^-\s+(.*)$", s)
@@ -149,14 +191,15 @@ def md_to_html(md_text: str) -> str:
 
     close_lists()
     flush_table()
-    return "\n".join(html_out)
+    return "\n".join(html_out), toc
 
 
-def render_doc_page(slug: str, title: str, body_html: str) -> str:
+def render_doc_page(slug: str, title: str, body_html: str, toc) -> str:
     sidebar_links = "\n".join(
         f'<a href="{s}.html" class="{"active" if s == slug else ""}">{html.escape(t)}</a>'
         for s, t, _ in DOCS_PAGES
     )
+    toc_links = "\n".join(f'<a href="#{hid}">{html.escape(lbl)}</a>' for hid, lbl in toc)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -172,14 +215,14 @@ def render_doc_page(slug: str, title: str, body_html: str) -> str:
   <header class="nav-wrap">
     <div class="container nav">
       <a href="../" class="brand">
-        <img src="../assets/livery-icon.png" alt="livery" width="28" height="28" />
+        <img src="../assets/livery-icon.png" alt="livery" width="24" height="24" />
         <span>livery</span>
+        <span class="brand-tag mono">v0.1.0</span>
       </a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="../#why">Why Livery</a>
-        <a href="../#features">Features</a>
-        <a href="../#gallery">Screenshots</a>
-        <a href="../#quickstart">Quick Start</a>
+        <a href="../#architecture">How It Works</a>
+        <a href="../#workflows">Workflows</a>
+        <a href="../#commands">CLI Cheat Sheet</a>
         <a href="architecture.html" class="active">Docs</a>
       </nav>
       <div class="nav-actions">
@@ -189,20 +232,25 @@ def render_doc_page(slug: str, title: str, body_html: str) -> str:
     </div>
   </header>
 
-  <div class="container docs-shell">
+  <div class="container-wide docs-shell">
     <aside class="docs-sidebar">
-      <div class="docs-nav-title">Documentation</div>
+      <div class="docs-nav-title">Guides</div>
       <nav class="docs-nav">
         {sidebar_links}
       </nav>
-      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
-        <a href="../" class="btn" style="width:100%;font-size:13px">← Back to Overview</a>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">
+        <a href="../" class="btn" style="width:100%;font-size:12.5px">← Overview</a>
       </div>
     </aside>
 
     <article class="docs-article">
       {body_html}
     </article>
+
+    <aside class="docs-toc">
+      <div class="docs-nav-title" style="padding-left:10px">On this page</div>
+      {toc_links}
+    </aside>
   </div>
 
   <footer class="footer">
@@ -229,19 +277,16 @@ def main():
     (OUT / "assets" / "ui").mkdir(parents=True)
     (OUT / "docs").mkdir(parents=True)
 
-    # Copy core static files + CNAME + .nojekyll + install.sh
     for name in ["index.html", "styles.css", "app.js", "CNAME"]:
         shutil.copy2(SITE_SRC / name, OUT / name)
     (OUT / ".nojekyll").write_text("")
     shutil.copy2(ROOT / "install.sh", OUT / "install.sh")
 
-    # Copy UI brand icons & favicons
     ui_assets = ROOT / "internal" / "ui" / "assets"
     shutil.copy2(ui_assets / "favicon.ico", OUT / "favicon.ico")
     for fn in ["livery-icon.png", "favicon-32.png", "apple-touch-icon.png"]:
         shutil.copy2(ui_assets / fn, OUT / "assets" / fn)
 
-    # Copy showcase GIFs & Retina screenshots without duplicating in git!
     gh_assets = ROOT / ".github" / "assets"
     for fn in ["demo.gif", "live-walkthrough.gif", "livery-logo-card.png"]:
         if (gh_assets / fn).exists():
@@ -251,13 +296,11 @@ def main():
     for img in (gh_assets / "ui").glob("*.png"):
         shutil.copy2(img, OUT / "assets" / "ui" / img.name)
 
-    # Render docs/*.md -> _site/docs/*.html (+ /docs/index.html redirect/copy)
     for slug, title, md_file in DOCS_PAGES:
         raw_md = (DOCS_SRC / md_file).read_text()
-        # Fix relative markdown links like (cli.md) -> (cli.html)
         raw_md = re.sub(r"\(([a-z0-9-]+)\.md\)", r"(\1.html)", raw_md)
-        body = md_to_html(raw_md)
-        page_html = render_doc_page(slug, title, body)
+        body, toc = md_to_html(raw_md)
+        page_html = render_doc_page(slug, title, body, toc)
         (OUT / "docs" / f"{slug}.html").write_text(page_html)
         if slug == "architecture":
             (OUT / "docs" / "index.html").write_text(page_html)
