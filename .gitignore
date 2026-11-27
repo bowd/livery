@@ -1,5 +1,6 @@
 build/
 dist/
+_site/
 __pycache__/
 internal/herdr/mods/*/gpui-kit.d.ts
 internal/herdr/mods/*/jsconfig.json

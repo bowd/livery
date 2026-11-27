@@ -5,6 +5,7 @@
 <h1 align="center" style="margin-top: 0.6rem; margin-bottom: 0.4rem;">livery (<code>liv</code>)</h1>
 
 <p align="center">
+  <a href="https://liv.bowd.io"><img src="https://img.shields.io/badge/Website-liv.bowd.io-c85a3a" alt="Website"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/bowd/livery/releases"><img src="https://img.shields.io/github/v/release/bowd/livery?include_prereleases" alt="Release"></a>
   <img src="https://img.shields.io/badge/Go-static%20binary%20(CGO__ENABLED%3D0)-00ADD8?logo=go&logoColor=white" alt="Go Static Binary">
@@ -19,6 +20,7 @@
 </p>
 
 <p align="center">
+  <a href="https://liv.bowd.io">Website</a> •
   <a href="#why-livery">Why Livery</a> •
   <a href="#live-tour--feature-preview">Tour &amp; Screenshots</a> •
   <a href="#installation">Install</a> •
