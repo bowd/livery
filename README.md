@@ -90,7 +90,13 @@ Once you work across **a MacBook, headless Linux / NixOS servers over SSH, and m
 curl -fsSL https://liv.bowd.io/install.sh | sh
 ```
 
-Installs the static `liv` binary to `~/.local/bin/liv` without `sudo`. Install stock [`skillshare`](https://github.com/runkids/skillshare) alongside it for skill distribution and embedded dashboards:
+Installs the static `liv` binary to `~/.local/bin/liv` without `sudo`. To pin a version or change the directory:
+
+```bash
+curl -fsSL https://liv.bowd.io/install.sh | LIVERY_VERSION=v0.1.0 LIVERY_INSTALL_DIR=/usr/local/bin sh
+```
+
+Install stock [`skillshare`](https://github.com/runkids/skillshare) alongside it for skill distribution and embedded dashboards:
 
 ```bash
 brew install skillshare
@@ -117,6 +123,16 @@ git clone https://github.com/bowd/livery.git
 cd livery
 make install   # Atomically installs static binary to ~/.local/bin/liv
 ```
+
+### Releasing
+
+Releases are built by GitHub Actions with [GoReleaser](https://goreleaser.com). Pushing a version tag publishes the binaries for macOS and Linux (arm64, amd64), `checksums.txt` and the Herdr launcher mod, then installs the new release with `install.sh` on each platform:
+
+```bash
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+A tag with a suffix, such as `v0.2.0-rc.1`, is published as a pre-release and does not become the version `install.sh` installs by default. Every pull request runs the same build without publishing (`goreleaser release --snapshot --clean --skip=publish` does it locally).
 
 ---
 

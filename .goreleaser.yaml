@@ -1,12 +1,14 @@
+# Release build for livery (`liv`). Run by .github/workflows/release.yml on a `v*` tag.
+# Local dry run: goreleaser release --snapshot --clean --skip=publish
 version: 2
 
 project_name: livery
 
 before:
   hooks:
-    - go mod tidy
-    - go test ./...
-    - sh -c 'mkdir -p dist && CGO_ENABLED=0 go run ./cmd/liv herdr export-mod --out dist/livery-launcher-mod.tar.gz'
+    # The Herdr launcher mod ships as its own release asset. It is written under build/ (git-ignored)
+    # because goreleaser empties dist/ before building.
+    - sh -c 'mkdir -p build/release && CGO_ENABLED=0 go run ./cmd/liv herdr export-mod --out "build/release/livery-launcher-mod_{{ .Version }}.tar.gz"'
 
 builds:
   - id: liv
@@ -20,7 +22,8 @@ builds:
       - -s -w
       - -X github.com/bowd/livery/internal/version.Version={{ .Version }}
       - -X github.com/bowd/livery/internal/version.Commit={{ .ShortCommit }}
-      - -X github.com/bowd/livery/internal/version.Date={{ .Date }}
+      - -X github.com/bowd/livery/internal/version.Date={{ .CommitDate }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
       - darwin
       - linux
@@ -30,31 +33,52 @@ builds:
 
 archives:
   - id: default
+    # install.sh downloads exactly this name: livery_<version>_<os>_<arch>.tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    format: tar.gz
+    formats:
+      - tar.gz
     files:
       - README.md
+      - LICENSE
 
 checksum:
   name_template: checksums.txt
+  extra_files:
+    - glob: "build/release/livery-launcher-mod_{{ .Version }}.tar.gz"
+
+release:
+  extra_files:
+    - glob: "build/release/livery-launcher-mod_{{ .Version }}.tar.gz"
+  # A tag like v0.2.0-rc.1 is published as a pre-release, so `releases/latest` keeps pointing at the last stable one.
+  prerelease: auto
 
 changelog:
+  use: github
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^ci:"
+      - "^chore:"
 
-brews:
+# Publishes a cask to bowd/homebrew-tap, only when the release job has HOMEBREW_TAP_TOKEN.
+# Without the token the cask is still generated into dist/ but not pushed.
+homebrew_casks:
   - name: livery
+    binaries:
+      - liv
     repository:
       owner: bowd
       name: homebrew-tap
-    directory: Formula
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    skip_upload: '{{ if .Env.HOMEBREW_TAP_TOKEN }}auto{{ else }}true{{ end }}'
     homepage: https://github.com/bowd/livery
     description: Declarative multi-host AI agent configuration & profile launcher (liv)
-    license: MIT
-    install: |
-      bin.install "liv"
-    test: |
-      assert_match "liv ", shell_output("#{bin}/liv version")
+    hooks:
+      post:
+        # The binary is not notarized, so clear the quarantine flag Homebrew sets on macOS.
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/liv"]
+          end
