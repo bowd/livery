@@ -1,0 +1,6 @@
+path = "~/Workspace/demo-app"
+why = "Demo project overlay for automated tests."
+files = ["CLAUDE.md"]
+mcp = ["demo-memory"]
+skills = ["alpha"]
+codex_trust = true

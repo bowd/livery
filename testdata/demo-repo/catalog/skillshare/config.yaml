@@ -1,0 +1,29 @@
+mode: merge
+sources:
+  skills: skills
+targets: {}
+mcp:
+  targets: []
+  servers:
+    demo-memory:
+      command: "{home}/.local/bin/demo-memory"
+      args:
+        - mcp
+    demo-search:
+      command: npx
+      args:
+        - "-y"
+        - demo-search-mcp
+hooks:
+  entries:
+    demo-hook:
+      description: Demo session hook
+      bindings:
+        claude:
+          events:
+            SessionStart:
+              - matcher: "*"
+                hooks:
+                  - type: command
+                    command: "echo hello"
+                    timeout: 5

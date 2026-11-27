@@ -1,0 +1,17 @@
+id = "claude-gateway"
+why = "Demo Claude gateway launcher profile."
+description = "Claude (Gateway)"
+harness = "claude"
+profile = "gateway"
+shim = "claude-gateway"
+mode = "shadow"
+shared_home = "~/.claude"
+auth_mode = "gateway"
+
+[claude]
+base_url = "https://gateway.example.test"
+token_secret = "store:demo-gateway-key"
+
+[herdr]
+name = "Claude (Gateway)"
+icon = "icons/claude.svg"

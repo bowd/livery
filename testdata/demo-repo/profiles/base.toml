@@ -1,0 +1,6 @@
+id = "base"
+description = "Base profile for every demo environment."
+launchers = ["claude-gateway"]
+
+[prompt]
+fragments = ["identity/owner"]

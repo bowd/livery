@@ -1,0 +1,31 @@
+# Demo Livery fleet inventory (used by automated Go tests)
+
+[defaults]
+skill_root = "~/.local/share/agent-config/skills"
+provider_skill_dirs = { claude = "~/.claude/skills", codex = "~/.codex/skills" }
+link_mode = { claude = "symlink", codex = "symlink" }
+backup_root = "~/.local/share/agent-config/backup"
+provider_prompt_files = { claude = "~/.claude/CLAUDE.md", codex = "~/.codex/AGENTS.md" }
+codex_config = "~/.codex/config.toml"
+provider_hook_files = { claude = "~/.claude/settings.json", codex = "~/.codex/hooks.json" }
+hook_root = "~/.local/share/agent-config/hooks"
+hook_stub_days = 30
+external = []
+
+[[target]]
+id = "dev@macbook"
+ssh = "local"
+providers = ["claude", "codex"]
+profiles = ["base", "workstation"]
+roles = ["app"]
+external = []
+adopt = []
+
+[[target]]
+id = "ops@server"
+ssh = "ops@server"
+providers = ["claude", "codex"]
+profiles = ["base", "server-bot"]
+roles = []
+external = []
+adopt = []

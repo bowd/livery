@@ -1,0 +1,9 @@
+{
+  "place": "none",
+  "title": "New Agent",
+  "overlay": {
+    "kind": "dialog",
+    "width": 600,
+    "height": 600
+  }
+}

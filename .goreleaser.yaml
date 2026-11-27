@@ -1,0 +1,60 @@
+version: 2
+
+project_name: livery
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+    - sh -c 'mkdir -p dist && CGO_ENABLED=0 go run ./cmd/liv herdr export-mod --out dist/livery-launcher-mod.tar.gz'
+
+builds:
+  - id: liv
+    main: ./cmd/liv
+    binary: liv
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/bowd/livery/internal/version.Version={{ .Version }}
+      - -X github.com/bowd/livery/internal/version.Commit={{ .ShortCommit }}
+      - -X github.com/bowd/livery/internal/version.Date={{ .Date }}
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: default
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+brews:
+  - name: livery
+    repository:
+      owner: bowd
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://github.com/bowd/livery
+    description: Declarative multi-host AI agent configuration & profile launcher (liv)
+    license: MIT
+    install: |
+      bin.install "liv"
+    test: |
+      assert_match "liv ", shell_output("#{bin}/liv version")

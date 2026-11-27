@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>livery</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <script>
+    (function () {
+      var pref = localStorage.getItem("skillshare-theme-preference");
+      if (!pref || pref === "system") {
+        localStorage.setItem("skillshare-theme-preference", "light");
+        pref = "light";
+      }
+      if (pref === "dark") document.documentElement.classList.add("dark");
+    })();
+  </script>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div id="app" class="shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="brand-home" class="brand-mark" title="All environments">
+          <img src="/assets/livery-icon.png" alt="" class="brand-icon" width="22" height="22" />
+          <span>livery</span>
+        </button>
+
+        <span class="slash">/</span>
+
+        <div class="switcher-wrap" id="switcher-wrap">
+          <button id="env-switcher-btn" class="switcher-trigger" aria-haspopup="menu" aria-expanded="false">
+            <span id="switcher-label" class="switcher-label">Environments</span>
+            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="env-switcher-menu" class="dropdown-menu hidden" role="menu"></div>
+        </div>
+      </div>
+
+      <nav id="topbar-tabs" class="seg-tabs" aria-label="Section navigation"></nav>
+
+      <div class="topbar-right">
+        <div id="topbar-slot-controls" class="slot-controls hidden"></div>
+
+        <button id="git-status-btn" class="ghost-pill" title="Git status & diff">
+          <span id="git-dot" class="dot ok"></span>
+          <span id="git-status-label">clean</span>
+        </button>
+
+        <button id="theme-toggle-btn" class="icon-btn" title="Switch theme" aria-label="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main id="main-content" class="workspace">
+      <div class="empty-center">Loading…</div>
+    </main>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="modal-title">Confirm</h3>
+        <button id="modal-close" class="icon-btn" aria-label="Close">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-footer" class="modal-footer"></div>
+    </div>
+  </div>
+
+  <div id="toast-root" class="toast-root"></div>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>

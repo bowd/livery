@@ -1,0 +1,12 @@
+# Generated lock fixture for demo-repo tests.
+
+[target."dev@macbook"]
+synced_at = "2026-01-01T00:00:00Z"
+commit = "0000000"
+
+[[target."dev@macbook".item]]
+kind = "file"
+path = "~/.claude/CLAUDE.md"
+role = "prompt"
+sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+sources = ["identity/owner"]

@@ -1,0 +1,9 @@
+id = "workstation"
+description = "Developer workstation demo profile."
+extends = ["base"]
+
+[prompt]
+fragments = ["style/concise"]
+
+[skills]
+include = ["alpha", "beta"]
