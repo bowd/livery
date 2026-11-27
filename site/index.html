@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>livery (liv) — Your AI agent fleet, in uniform</title>
-  <meta name="description" content="Multi-host SSH sync, composable profiles, live nested Skillshare dashboards, ranked prompt fragments, Shadow Homes, and Herdr launching." />
-  <meta property="og:title" content="livery (liv) — Your AI agent fleet, in uniform" />
-  <meta property="og:description" content="Multi-host AI agent control plane built on Skillshare: SSH sync, nested dashboards, ranked CLAUDE.md/AGENTS.md prompt fragments, Shadow Homes, and Herdr launcher." />
+  <title>livery (liv) — Sync AI coding setups across every machine &amp; account</title>
+  <meta name="description" content="Keep Claude Code, Codex, OpenCode, and Antigravity in sync across your laptop and SSH servers — with per-machine profiles, modular CLAUDE.md/AGENTS.md prompts, and side-by-side work/personal accounts." />
+  <meta property="og:title" content="livery (liv) — Sync AI coding setups across every machine &amp; account" />
+  <meta property="og:description" content="Manage skills, MCP servers, hooks, CLAUDE.md/AGENTS.md prompts, and multiple API/OAuth accounts across your laptop and SSH servers." />
   <meta property="og:image" content="https://liv.bowd.io/assets/og-card.png" />
   <meta property="og:url" content="https://liv.bowd.io" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -25,9 +25,10 @@
       </a>
 
       <nav class="nav-links" aria-label="Primary">
+        <a href="#use-cases">Use Cases</a>
+        <a href="#workflows">Tour</a>
         <a href="#architecture">How It Works</a>
-        <a href="#workflows">Workflows</a>
-        <a href="#commands">CLI Cheat Sheet</a>
+        <a href="#commands">CLI</a>
         <a href="docs/architecture.html">Docs</a>
       </nav>
 
@@ -43,29 +44,60 @@
   </header>
 
   <main>
-    <!-- HERO -->
+    <!-- HERO: CRYSTAL CLEAR WHAT IT DOES -->
     <section class="hero">
       <div class="container">
         <div class="hero-badge">
           <span class="dot"></span>
-          <span>Static Go binary · macOS, Linux &amp; NixOS · Built on <a href="https://github.com/runkids/skillshare" target="_blank" rel="noopener">Skillshare</a></span>
+          <span>For Claude Code, Codex, OpenCode &amp; Antigravity · Built on <a href="https://github.com/runkids/skillshare" target="_blank" rel="noopener">Skillshare</a></span>
         </div>
 
-        <h1>Your AI agent fleet, <span class="accent">in uniform.</span></h1>
+        <h1>Sync your AI coding setup across<br /><span class="accent">every machine and account.</span></h1>
 
         <p class="hero-lead">
-          Two-way SSH sync, composable host profiles, ranked <code>CLAUDE.md</code> / <code>AGENTS.md</code> prompt fragments, and multi-account Shadow Homes.
+          Keep skills, MCP servers, hooks, global prompts, and multiple API/OAuth logins in one Git folder — deployed cleanly to your laptop and SSH servers.
         </p>
+
+        <div class="pillars">
+          <div class="pillar">
+            <div class="pillar-head">
+              <strong>SSH Fleet Sync</strong>
+              <code class="mono">liv sync</code>
+            </div>
+            <p>Push setups to remote Linux boxes and pull remote edits back.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-head">
+              <strong>Multi-Account</strong>
+              <code class="mono">liv claude …</code>
+            </div>
+            <p>Run work gateways &amp; personal logins side-by-side with shared skills.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-head">
+              <strong>Role Profiles</strong>
+              <code class="mono">Matrix</code>
+            </div>
+            <p>Send laptop tools to Macs and ops/Nix tools to headless servers.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-head">
+              <strong>Shared Prompts</strong>
+              <code class="mono">CLAUDE.md</code>
+            </div>
+            <p>Compile ranked Markdown blocks into <code>CLAUDE.md</code> &amp; <code>AGENTS.md</code>.</p>
+          </div>
+        </div>
 
         <div class="install-box">
           <div class="install-head">
             <div class="install-tabs" role="tablist">
-              <button class="itab active" data-itab="shell">Shell</button>
+              <button class="itab active" data-itab="shell">macOS / Linux</button>
               <button class="itab" data-itab="go">Go</button>
               <button class="itab" data-itab="nix">Nix</button>
               <button class="itab" data-itab="source">Source</button>
             </div>
-            <span class="mono hide-mobile" style="font-size:11px;color:#7f8ca4">~/.local/bin/liv · no sudo</span>
+            <span class="mono hide-mobile" style="font-size:11px;color:#7f8ca4">single static binary · no sudo</span>
           </div>
           <div class="install-body">
             <div class="install-cmd mono">
@@ -81,120 +113,123 @@
               <i class="wdot" style="background:#ff5f56"></i>
               <i class="wdot" style="background:#ffbd2e"></i>
               <i class="wdot" style="background:#27c93f"></i>
-              <span class="mono" style="font-size:11.5px;color:var(--ink-3);margin-left:6px">liv ui · 127.0.0.1:19400</span>
+              <span class="mono hide-mobile" style="font-size:11.5px;color:var(--ink-3);margin-left:6px">livery (liv) · fleet overview &amp; live SSH UI</span>
             </div>
             <div class="stage-switch">
-              <button class="stage-btn active" data-stage-src="assets/live-walkthrough.gif" data-stage-alt="Live Meta-UI walkthrough over SSH">Live UI Tour</button>
-              <button class="stage-btn" data-stage-src="assets/demo.gif" data-stage-alt="Animated overview of Livery">60s Concept</button>
+              <button class="stage-btn active" data-stage-src="assets/demo.gif" data-stage-alt="Animated overview of Livery">How It Works (GIF)</button>
+              <button class="stage-btn" data-stage-src="assets/live-walkthrough.gif" data-stage-alt="Live Meta-UI walkthrough over SSH">Live UI Tour</button>
             </div>
           </div>
           <div class="stage-media">
-            <img id="hero-stage-img" src="assets/live-walkthrough.gif" alt="Live Livery Meta-UI walkthrough over SSH" width="1120" height="700" />
+            <img id="hero-stage-img" src="assets/demo.gif" alt="Animated overview of Livery" width="1120" height="630" />
           </div>
         </div>
       </div>
     </section>
 
-    <!-- HOW IT WORKS (STRUCTURED ANATOMY, ZERO PROSE WALLS) -->
-    <section id="architecture" class="section">
+    <!-- MAIN USE CASES (SCANNABLE BEFORE / AFTER + COMMAND) -->
+    <section id="use-cases" class="section">
       <div class="container">
         <div class="sec-head">
-          <h2>How Livery fits in</h2>
-          <span class="sec-sub">Skillshare syncs tools on one machine. Livery compiles and syncs across every machine and account.</span>
+          <h2>Main use cases</h2>
+          <span class="sec-sub">When plain single-machine dotfiles or single-account CLIs stop scaling.</span>
         </div>
 
-        <div class="layer-diagram">
-          <div class="layer-box">
-            <div class="layer-title">
-              <span>Control Plane · <code class="mono">~/.local/share/livery</code></span>
-              <span class="pill pill-accent">Git-backed</span>
+        <div class="uc-grid">
+          <div class="uc-card">
+            <div>
+              <div class="uc-top">
+                <span class="uc-num">01 · Multi-Machine</span>
+                <span class="pill pill-blue">Laptop + SSH Servers</span>
+              </div>
+              <h3>Keep MacBooks and remote Linux boxes in sync</h3>
             </div>
-            <div class="kv-list">
-              <div class="kv-row">
-                <span class="kv-key mono">inventory.toml</span>
-                <span class="kv-val">Local &amp; SSH hosts, discovered via Tailscale, Herdr &amp; SSH</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">catalog/skillshare/</span>
-                <span class="kv-val">Shared skills, MCP servers, hooks, agents, plugins &amp; extras</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">profiles/*.toml</span>
-                <span class="kv-val">Composable bundles (<code>base</code> → <code>workstation</code>, <code>server-ops</code>)</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">prompts/fragments/</span>
-                <span class="kv-val">Ranked <code>+++</code> blocks compiled into <code>CLAUDE.md</code> &amp; <code>AGENTS.md</code></span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">launchers/*.toml</span>
-                <span class="kv-val">Multi-account profiles referencing OS Keychain <code>store:</code> secrets</span>
-              </div>
+            <div class="uc-ba">
+              <div class="uc-before"><span class="mark">✕</span><span>SSH servers miss your local skills &amp; MCP; edits made remotely stay stranded.</span></div>
+              <div class="uc-after"><span class="mark">✓</span><span>Push over SSH, open the remote Skillshare UI via tunnel, and pull edits back.</span></div>
             </div>
+            <div class="uc-cmd mono"><span class="prompt">$</span>liv env add ops@linux-node &amp;&amp; liv sync</div>
           </div>
 
-          <div class="layer-bridge mono">
-            <div class="bridge-chip" style="color:var(--blue)">liv sync ──▶</div>
-            <div class="bridge-chip" style="color:var(--ink-2)">SSH Tunnel UI</div>
-            <div class="bridge-chip" style="color:var(--green)">◀── liv pull</div>
+          <div class="uc-card">
+            <div>
+              <div class="uc-top">
+                <span class="uc-num">02 · Multi-Account</span>
+                <span class="pill pill-green">Work + Personal</span>
+              </div>
+              <h3>Run work gateways &amp; personal plans side-by-side</h3>
+            </div>
+            <div class="uc-ba">
+              <div class="uc-before"><span class="mark">✕</span><span>Switching between company LiteLLM, personal Max, and custom providers overwrites auth.</span></div>
+              <div class="uc-after"><span class="mark">✓</span><span>Shadow Homes isolate logins &amp; Keychain keys while sharing all your skills &amp; hooks.</span></div>
+            </div>
+            <div class="uc-cmd mono"><span class="prompt">$</span>liv claude gateway --permission-mode plan</div>
           </div>
 
-          <div class="layer-box">
-            <div class="layer-title">
-              <span>Each Target · Mac, Linux or NixOS</span>
-              <span class="pill pill-green">Zero forks</span>
+          <div class="uc-card">
+            <div>
+              <div class="uc-top">
+                <span class="uc-num">03 · Machine Roles</span>
+                <span class="pill pill-accent">Workstation vs. Server</span>
+              </div>
+              <h3>Deploy different toolsets per machine role</h3>
             </div>
-            <div class="kv-list">
-              <div class="kv-row">
-                <span class="kv-key mono">skillshare sync</span>
-                <span class="kv-val">Distributes compiled bundle to Claude, Codex, OpenCode, Agy, Pi</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">livery-base tag</span>
-                <span class="kv-val">Snapshots pushed state so host-side edits diff &amp; pull cleanly</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">~/.claude &amp; ~/.codex</span>
-                <span class="kv-val">Receives lean, provider-filtered global &amp; project prompts</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">Shadow Homes</span>
-                <span class="kv-val">Symlinks shared skills/memory; isolates OAuth &amp; API tokens</span>
-              </div>
-              <div class="kv-row">
-                <span class="kv-key mono">Herdr Wizard</span>
-                <span class="kv-val"><code>Cmd+Shift+N</code> launches any profile on local or remote spaces</span>
-              </div>
+            <div class="uc-ba">
+              <div class="uc-before"><span class="mark">✕</span><span>Syncing one flat config puts browser tools on headless servers or prod DB tools everywhere.</span></div>
+              <div class="uc-after"><span class="mark">✓</span><span>Compose <code>base</code>, <code>workstation</code>, and <code>server-ops</code> profiles in one Matrix.</span></div>
             </div>
+            <div class="uc-cmd mono"><span class="prompt">$</span>liv ui   <span style="color:#7f8ca4"># Toggle per-host rules in Matrix</span></div>
           </div>
+
+          <div class="uc-card">
+            <div>
+              <div class="uc-top">
+                <span class="uc-num">04 · Global Prompts</span>
+                <span class="pill pill-blue">CLAUDE.md &amp; AGENTS.md</span>
+              </div>
+              <h3>Maintain global instructions in one place</h3>
+            </div>
+            <div class="uc-ba">
+              <div class="uc-before"><span class="mark">✕</span><span>Hand-editing <code>~/.claude/CLAUDE.md</code> and <code>~/.codex/AGENTS.md</code> drifts and bloats context.</span></div>
+              <div class="uc-after"><span class="mark">✓</span><span>Rank small Markdown prompt fragments once; Livery compiles clean files per tool.</span></div>
+            </div>
+            <div class="uc-cmd mono"><span class="prompt">$</span>liv plan <span style="color:#7f8ca4"># Preview compiled prompt diffs</span></div>
+          </div>
+        </div>
+
+        <div class="companion-strip">
+          <div>
+            <strong>Bonus — Herdr, T3 Code &amp; OpenClaw integration:</strong> press <code>Cmd+Shift+N</code> in Herdr to pick <code>Space → Profile → Launch</code> on any local or remote machine.
+          </div>
+          <a href="docs/launchers-and-secrets.html" class="btn">Herdr &amp; Accounts Guide →</a>
         </div>
       </div>
     </section>
 
-    <!-- WORKFLOWS (TIGHT BULLETS + CODE + SCREENSHOT) -->
+    <!-- INTERACTIVE FEATURE TOUR -->
     <section id="workflows" class="section">
       <div class="container">
         <div class="sec-head">
-          <h2>Core workflows</h2>
-          <span class="sec-sub">Click a workflow to inspect its config and live UI.</span>
+          <h2>See it in action</h2>
+          <span class="sec-sub">Every feature works from both the CLI and the local <code>liv ui</code> dashboard.</span>
         </div>
 
         <div class="ftabs" role="tablist">
           <button class="ftab active" data-ftab="sync">Two-Way SSH Sync</button>
-          <button class="ftab" data-ftab="nested">Nested Remote Skillshare</button>
-          <button class="ftab" data-ftab="matrix">Profiles &amp; Matrix</button>
-          <button class="ftab" data-ftab="prompts">Prompt Fragments</button>
-          <button class="ftab" data-ftab="launcher">Shadow Homes &amp; Herdr</button>
+          <button class="ftab" data-ftab="launcher">Multi-Account Launcher</button>
+          <button class="ftab" data-ftab="matrix">Role Profiles &amp; Matrix</button>
+          <button class="ftab" data-ftab="prompts">Modular Prompts</button>
+          <button class="ftab" data-ftab="nested">Remote Skillshare UI</button>
         </div>
 
         <!-- 1: Two-Way Sync -->
         <div class="fpanel active" data-fpanel="sync">
           <div class="fcard">
-            <h3>Push from Git, or pull remote edits back</h3>
+            <h3>Push to SSH hosts, or pull remote edits back</h3>
             <ul class="fpoints">
-              <li><strong>Baseline tags:</strong> every <code>liv sync</code> snapshots a <code>livery-base</code> Git tag on the host.</li>
-              <li><strong>Live SSE detection:</strong> remote edits surface as <code>Sync · ↑1</code> immediately.</li>
-              <li><strong>Granular pull:</strong> promote to Catalog, fork per host, or save as a host override.</li>
+              <li><strong>Safe outward push:</strong> compiles each host's skills, MCP, hooks &amp; prompts and tags a baseline snapshot.</li>
+              <li><strong>Instant drift detection:</strong> remote edits show up live as <code>Sync · ↑1</code>.</li>
+              <li><strong>Your choice on pull:</strong> promote to shared Catalog, fork, or keep as a host-only override.</li>
             </ul>
             <pre class="code-block mono">liv plan --target ops@linux-node
 liv sync --target ops@linux-node
@@ -206,33 +241,33 @@ liv pull --target ops@linux-node</pre>
           </div>
         </div>
 
-        <!-- 2: Nested Remote Skillshare -->
-        <div class="fpanel" data-fpanel="nested">
+        <!-- 2: Multi-Account Launcher -->
+        <div class="fpanel" data-fpanel="launcher">
           <div class="fcard">
-            <h3>Stock Skillshare UI, tunneled over SSH</h3>
+            <h3>Named agent profiles &amp; Herdr Cmd+Shift+N</h3>
             <ul class="fpoints">
-              <li><strong>Sandboxed Catalog:</strong> curate your full library without touching live <code>~/.claude</code>.</li>
-              <li><strong>SSH loopback tunnel:</strong> opens remote Linux <code>skillshare ui</code> Read/Write inside Livery.</li>
-              <li><strong>Zero orphans:</strong> stdin-EOF watchdog stops the remote UI process on close.</li>
+              <li><strong>Direct launch:</strong> <code>liv claude gateway [args...]</code> passes all flags straight to the CLI.</li>
+              <li><strong>Shadow Homes:</strong> symlinks shared skills &amp; memory pools; isolates OAuth &amp; Keychain keys.</li>
+              <li><strong>Cross-host secrets:</strong> sync <code>store:</code> keys over SSH and verify parity via <code>HMAC-SHA256</code>.</li>
             </ul>
-            <pre class="code-block mono">liv env discover
-liv env add ops@linux-node --profiles base,server-ops
-liv env bootstrap ops@linux-node --skillshare
-liv ui</pre>
+            <pre class="code-block mono">liv profile new
+liv secret set gateway-api-key
+liv secrets sync --target ops@linux-node
+liv claude gateway --permission-mode plan</pre>
           </div>
           <div class="fshot">
-            <img src="assets/ui/nested-skillshare-ssh.png" alt="Remote Skillshare UI tunneled over SSH" loading="lazy" />
+            <img src="assets/ui/launcher-and-herdr.png" alt="CLI launcher and Herdr wizard" loading="lazy" />
           </div>
         </div>
 
         <!-- 3: Matrix -->
         <div class="fpanel" data-fpanel="matrix">
           <div class="fcard">
-            <h3>Composable profiles + per-host Matrix</h3>
+            <h3>Assign capabilities across hosts in one grid</h3>
             <ul class="fpoints">
-              <li><strong>Inheritance:</strong> <code>workstation</code> and <code>server-ops</code> extend <code>base</code>.</li>
-              <li><strong>Profile guardrails:</strong> blue checkmarks prevent accidental edits to shared profiles.</li>
-              <li><strong>All categories:</strong> skills, MCP, hooks, plugins, prompts, and launchers in one grid.</li>
+              <li><strong>Profile inheritance:</strong> <code>workstation</code> and <code>server-ops</code> extend <code>base</code>.</li>
+              <li><strong>Guardrails:</strong> blue checkmarks show profile-inherited items; green/dark show host overrides.</li>
+              <li><strong>Unified scope:</strong> covers skills, MCP servers, hooks, plugins, prompts, and launchers.</li>
             </ul>
             <pre class="code-block mono"># profiles/workstation.toml
 id = "workstation"
@@ -249,11 +284,11 @@ launchers = ["claude-gateway", "claude-personal"]</pre>
         <!-- 4: Prompts -->
         <div class="fpanel" data-fpanel="prompts">
           <div class="fcard">
-            <h3>Ranked fragments → lean CLAUDE.md &amp; AGENTS.md</h3>
+            <h3>Composable fragments → CLAUDE.md &amp; AGENTS.md</h3>
             <ul class="fpoints">
-              <li><strong>Global rank:</strong> order fragments <code>#1..#N</code> once across all profiles.</li>
-              <li><strong>Context budget:</strong> live word counts keep always-loaded files under ~60 lines.</li>
-              <li><strong>Built-in Git modal:</strong> diff, revert, or commit control-plane edits from the topbar.</li>
+              <li><strong>Rank once:</strong> set global order (<code>#1..#N</code>) across all profiles and machines.</li>
+              <li><strong>Stay within budget:</strong> live word counts prevent prompt bloat.</li>
+              <li><strong>Built-in Git review:</strong> inspect unified diffs, revert, or commit from the topbar.</li>
             </ul>
             <pre class="code-block mono">+++
 id = "engineering/verify-first"
@@ -267,22 +302,98 @@ providers = ["claude", "codex"]
           </div>
         </div>
 
-        <!-- 5: Launcher & Herdr -->
-        <div class="fpanel" data-fpanel="launcher">
+        <!-- 5: Nested Remote Skillshare -->
+        <div class="fpanel" data-fpanel="nested">
           <div class="fcard">
-            <h3>Multi-account Shadow Homes &amp; Herdr wizard</h3>
+            <h3>Open any remote machine's Skillshare UI locally</h3>
             <ul class="fpoints">
-              <li><strong>Direct execve:</strong> <code>liv claude gateway [args...]</code> passes all flags verbatim.</li>
-              <li><strong>Zero-leak secrets:</strong> macOS Keychain + salted <code>HMAC-SHA256</code> SSH parity checks.</li>
-              <li><strong>Herdr mod:</strong> <code>Cmd+Shift+N</code> opens <code>Space → Profile → Launch</code> on any machine.</li>
+              <li><strong>Zero-prereq discovery:</strong> finds hosts from Tailscale, Herdr &amp; <code>~/.ssh/config</code>.</li>
+              <li><strong>Live SSH tunnel:</strong> proxies remote <code>skillshare ui</code> into your browser Read/Write.</li>
+              <li><strong>Adopt existing setups:</strong> scans <code>~/.claude</code> &amp; <code>~/.codex</code> to import unmanaged items.</li>
             </ul>
-            <pre class="code-block mono">liv profile new
-liv secret set gateway-api-key
-liv secrets sync --target ops@linux-node
-liv herdr install-mod</pre>
+            <pre class="code-block mono">liv env discover
+liv env add ops@linux-node --profiles base,server-ops
+liv env bootstrap ops@linux-node --skillshare
+liv ui</pre>
           </div>
           <div class="fshot">
-            <img src="assets/ui/launcher-and-herdr.png" alt="CLI launcher and Herdr wizard" loading="lazy" />
+            <img src="assets/ui/nested-skillshare-ssh.png" alt="Remote Skillshare UI tunneled over SSH" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS UNDER THE HOOD -->
+    <section id="architecture" class="section">
+      <div class="container">
+        <div class="sec-head">
+          <h2>How it works under the hood</h2>
+          <span class="sec-sub">Plain TOML &amp; Markdown in <code>~/.local/share/livery</code> — wraps stock <code>skillshare</code> with zero forks.</span>
+        </div>
+
+        <div class="layer-diagram">
+          <div class="layer-box">
+            <div class="layer-title">
+              <span>Control Plane · <code class="mono">~/.local/share/livery</code></span>
+              <span class="pill pill-accent">Git-backed</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row">
+                <span class="kv-key mono">inventory.toml</span>
+                <span class="kv-val">Your local &amp; SSH machines + assigned profiles</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">catalog/skillshare/</span>
+                <span class="kv-val">Central library of skills, MCP servers, hooks &amp; plugins</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">profiles/*.toml</span>
+                <span class="kv-val">Reusable role bundles (<code>base</code>, <code>workstation</code>, <code>server-ops</code>)</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">prompts/fragments/</span>
+                <span class="kv-val">Ranked Markdown blocks compiled per harness</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">launchers/*.toml</span>
+                <span class="kv-val">Named account profiles + symbolic Keychain <code>store:</code> refs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="layer-bridge mono">
+            <div class="bridge-chip" style="color:var(--blue)">liv sync ──▶</div>
+            <div class="bridge-chip" style="color:var(--ink-2)">SSH Tunnel</div>
+            <div class="bridge-chip" style="color:var(--green)">◀── liv pull</div>
+          </div>
+
+          <div class="layer-box">
+            <div class="layer-title">
+              <span>Each Machine · Mac, Linux or NixOS</span>
+              <span class="pill pill-green">Native files</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row">
+                <span class="kv-key mono">skillshare sync</span>
+                <span class="kv-val">Installs selected skills, MCP &amp; hooks into each coding tool</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">~/.claude &amp; ~/.codex</span>
+                <span class="kv-val">Gets compiled <code>CLAUDE.md</code> &amp; <code>AGENTS.md</code> instructions</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">Shadow Homes</span>
+                <span class="kv-val">Lets multiple accounts run at once with shared skills</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">Keychain / 0600</span>
+                <span class="kv-val">Holds actual API keys locally (never committed to Git)</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key mono">livery-base tag</span>
+                <span class="kv-val">Tracks local edits on the machine for clean <code>liv pull</code></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -292,64 +403,64 @@ liv herdr install-mod</pre>
     <section id="commands" class="section">
       <div class="container">
         <div class="sec-head">
-          <h2>CLI at a glance</h2>
-          <span class="sec-sub">Single static binary (<code>liv</code>), zero runtime dependencies.</span>
+          <h2>Common commands</h2>
+          <span class="sec-sub">Install <code>liv</code> + <code>skillshare</code>, then run <code>liv onboard --apply</code>.</span>
         </div>
 
         <div class="cmd-grid">
           <div class="cmd-card">
-            <div class="cmd-card-head">Launch Profiles &amp; Secrets</div>
+            <div class="cmd-card-head">Accounts, Launching &amp; Secrets</div>
             <div class="cmd-row">
               <code>liv claude gateway [args...]</code>
-              <span>Launch profile (passes trailing flags verbatim)</span>
+              <span>Launch named profile (passes all flags verbatim)</span>
             </div>
             <div class="cmd-row">
               <code>liv list</code>
-              <span>List profiles, auth modes, and secret status</span>
+              <span>List configured profiles &amp; secret status</span>
             </div>
             <div class="cmd-row">
               <code>liv profile new</code>
-              <span>Interactive wizard for gateways &amp; OAuth accounts</span>
+              <span>Create a gateway, OAuth, or custom-provider profile</span>
             </div>
             <div class="cmd-row">
               <code>liv group set claude gateway work</code>
-              <span>Pool sessions &amp; memory across Shadow Homes</span>
+              <span>Share session history across selected profiles</span>
             </div>
             <div class="cmd-row">
               <code>liv secret set &lt;name&gt;</code>
-              <span>Save secret to macOS Keychain / <code>0600</code> store</span>
+              <span>Store API key in macOS Keychain / <code>0600</code> file</span>
             </div>
             <div class="cmd-row">
               <code>liv secrets sync</code>
-              <span>Stream required <code>store:</code> secrets over SSH</span>
+              <span>Copy required secrets to SSH hosts</span>
             </div>
           </div>
 
           <div class="cmd-card">
-            <div class="cmd-card-head">Fleet Control &amp; Companion Apps</div>
+            <div class="cmd-card-head">Machines, Sync &amp; Web UI</div>
             <div class="cmd-row">
               <code>liv onboard --apply</code>
-              <span>Guided setup checklist &amp; one-step fixes</span>
+              <span>Check setup &amp; apply recommended fixes</span>
             </div>
             <div class="cmd-row">
               <code>liv ui</code>
-              <span>Open Meta-UI &amp; embedded Skillshare slots</span>
+              <span>Open local dashboard &amp; SSH-tunneled Skillshare</span>
             </div>
             <div class="cmd-row">
               <code>liv env discover</code>
-              <span>Find Tailscale, Herdr &amp; <code>~/.ssh/config</code> hosts</span>
+              <span>Find Tailscale, Herdr &amp; <code>~/.ssh/config</code> machines</span>
             </div>
             <div class="cmd-row">
               <code>liv env bootstrap &lt;id&gt; --skillshare</code>
-              <span>Cross-compile <code>liv</code> &amp; install <code>skillshare</code> via SSH</span>
+              <span>Install <code>liv</code> &amp; <code>skillshare</code> on a remote host</span>
             </div>
             <div class="cmd-row">
               <code>liv plan / liv sync / liv pull</code>
-              <span>Preview, push outward, or pull host edits back</span>
+              <span>Preview changes, push to hosts, or pull edits back</span>
             </div>
             <div class="cmd-row">
-              <code>liv herdr install-mod</code>
-              <span>Install <code>Cmd+Shift+N</code> launcher mod into Herdr</span>
+              <code>liv doctor</code>
+              <span>Verify sync state, Herdr mod &amp; secret parity</span>
             </div>
           </div>
         </div>
@@ -361,14 +472,14 @@ liv herdr install-mod</pre>
       <div class="container">
         <div class="sec-head">
           <h2>Documentation</h2>
-          <span class="sec-sub">Reference guides for schemas, CLI flags, Shadow Homes, and prompt authoring.</span>
+          <span class="sec-sub">Full reference for config files, CLI flags, Shadow Homes, and prompt guidelines.</span>
         </div>
 
         <div class="doc-cards">
           <a href="docs/architecture.html" class="doc-card">
             <div>
               <strong>Architecture</strong>
-              <span>XDG layout, TOML schemas &amp; <code>livery-base</code> sync</span>
+              <span>Directory layout, TOML schemas &amp; two-way sync</span>
             </div>
             <span class="arrow">Read →</span>
           </a>
@@ -381,14 +492,14 @@ liv herdr install-mod</pre>
           </a>
           <a href="docs/launchers-and-secrets.html" class="doc-card">
             <div>
-              <strong>Launchers &amp; Herdr</strong>
-              <span>Shadow Homes, Keychain &amp; <code>Cmd+Shift+N</code> mod</span>
+              <strong>Accounts &amp; Herdr</strong>
+              <span>Shadow Homes, Keychain secrets &amp; Herdr mod</span>
             </div>
             <span class="arrow">Read →</span>
           </a>
           <a href="docs/ui-and-skillshare.html" class="doc-card">
             <div>
-              <strong>Meta-UI &amp; Skillshare</strong>
+              <strong>Web UI &amp; Skillshare</strong>
               <span>SSH tunnels, Matrix &amp; Git diff modal</span>
             </div>
             <span class="arrow">Read →</span>

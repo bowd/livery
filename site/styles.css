@@ -162,8 +162,63 @@ code, pre, .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo
 
 /* Hero — compact & high-signal */
 .hero {
-  padding: 42px 0 40px;
+  padding: 36px 0 38px;
   text-align: center;
+}
+
+/* 4-Pillar Above-the-Fold Strip */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 980px;
+  margin: 0 auto 22px;
+  text-align: left;
+}
+
+.pillar {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.pillar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.pillar strong {
+  font-size: 13.5px;
+  font-weight: 780;
+  letter-spacing: -0.01em;
+}
+
+.pillar-head code {
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 650;
+}
+
+.pillar p code {
+  font-size: 11.5px;
+  background: var(--bg-subtle);
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+.pillar p {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.4;
 }
 
 .hero-badge {
@@ -329,6 +384,7 @@ code, pre, .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo
   border-radius: 6px;
   font-size: 12px;
   font-weight: 650;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -371,6 +427,120 @@ code, pre, .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo
 .sec-sub {
   font-size: 14px;
   color: var(--ink-2);
+}
+
+/* Use Cases 2x2 Grid — crisp Before / After + Command */
+.uc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.uc-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.uc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.uc-num {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+
+.uc-card h3 {
+  font-size: 17.5px;
+  font-weight: 820;
+  letter-spacing: -0.018em;
+  line-height: 1.25;
+}
+
+.uc-ba {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.uc-before {
+  display: flex;
+  gap: 8px;
+  color: var(--ink-2);
+}
+
+.uc-before .mark {
+  color: var(--ink-3);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.uc-after {
+  display: flex;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 550;
+}
+
+.uc-after .mark {
+  color: var(--green);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.uc-cmd {
+  background: var(--bg-code);
+  color: #e6edf7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 1px solid #283042;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.uc-cmd .prompt {
+  color: #e5795a;
+  margin-right: 7px;
+  user-select: none;
+}
+
+.companion-strip {
+  margin-top: 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 13.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.companion-strip code {
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 650;
 }
 
 /* Architecture Split Diagram */
@@ -930,13 +1100,14 @@ code, pre, .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo
 .footer-links a:hover { color: var(--ink); }
 
 @media (max-width: 1020px) {
+  .pillars { grid-template-columns: repeat(2, 1fr); }
   .docs-shell { grid-template-columns: 210px minmax(0, 1fr); }
   .docs-toc { display: none; }
   .doc-cards { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 880px) {
-  .layer-diagram, .fpanel.active, .cmd-grid { grid-template-columns: 1fr; }
+  .uc-grid, .layer-diagram, .fpanel.active, .cmd-grid { grid-template-columns: 1fr; }
   .layer-bridge { flex-direction: row; flex-wrap: wrap; padding: 4px 0; }
   .docs-shell { grid-template-columns: 1fr; }
   .docs-sidebar { position: static; }
@@ -947,7 +1118,7 @@ code, pre, .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo
 
 @media (max-width: 600px) {
   .hide-mobile { display: none !important; }
-  .doc-cards { grid-template-columns: 1fr; }
+  .pillars, .doc-cards { grid-template-columns: 1fr; }
   .cmd-row { flex-direction: column; gap: 3px; }
   .cmd-row span { text-align: left; }
   .kv-row { grid-template-columns: 1fr; gap: 2px; }

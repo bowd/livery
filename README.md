@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <strong>Your AI agent fleet, in uniform.</strong><br>
-  Declarative multi-host environment orchestration, two-way SSH sync, nested Skillshare dashboards,<br>
-  ranked prompt fragments, multi-account Shadow Homes, and native Herdr launching.
+  <strong>Sync your AI coding setup across every machine and account.</strong><br>
+  Manage skills, MCP servers, hooks, <code>CLAUDE.md</code> / <code>AGENTS.md</code> prompts, and multiple work/personal accounts<br>
+  for Claude Code, Codex, OpenCode, and Antigravity — across your laptop and SSH servers.
 </p>
 
 <p align="center">
