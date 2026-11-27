@@ -10,16 +10,16 @@
   <meta property="og:image" content="https://liv.bowd.io/assets/og-card.png" />
   <meta property="og:url" content="https://liv.bowd.io" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="nav-wrap">
     <div class="container nav">
-      <a href="/" class="brand">
-        <img src="/assets/livery-icon.png" alt="livery" width="28" height="28" />
+      <a href="./" class="brand">
+        <img src="assets/livery-icon.png" alt="livery" width="28" height="28" />
         <span>livery</span>
       </a>
 
@@ -28,12 +28,12 @@
         <a href="#features">Features</a>
         <a href="#gallery">Screenshots</a>
         <a href="#quickstart">Quick Start</a>
-        <a href="/docs/architecture.html">Docs</a>
+        <a href="docs/architecture.html">Docs</a>
       </nav>
 
       <div class="nav-actions">
         <button id="theme-toggle" class="btn icon-toggle" aria-label="Toggle color theme" title="Switch theme"></button>
-        <a href="/docs/cli.html" class="btn hide-mobile">CLI Reference</a>
+        <a href="docs/cli.html" class="btn hide-mobile">CLI Reference</a>
         <a href="https://github.com/bowd/livery" class="btn btn-primary" target="_blank" rel="noopener">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.02 11.02 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
           <span>GitHub</span>
@@ -76,7 +76,7 @@
         </div>
 
         <div class="hero-ctas">
-          <a href="/docs/architecture.html" class="btn btn-primary">Read the Docs →</a>
+          <a href="docs/architecture.html" class="btn btn-primary">Read the Docs →</a>
           <a href="#features" class="btn">Explore Features</a>
           <a href="https://github.com/bowd/livery/releases/latest" class="btn" target="_blank" rel="noopener">Download Binary</a>
         </div>
@@ -90,12 +90,12 @@
               <span class="mono" style="font-size:12px;color:var(--ink-faint);margin-left:8px">liv ui · 127.0.0.1:19400</span>
             </div>
             <div class="stage-switch">
-              <button class="stage-btn active" data-stage-src="/assets/demo.gif" data-stage-alt="Animated overview of Livery">Concept Story</button>
-              <button class="stage-btn" data-stage-src="/assets/live-walkthrough.gif" data-stage-alt="Live Meta-UI walkthrough over SSH">Live SSH Tour</button>
+              <button class="stage-btn active" data-stage-src="assets/demo.gif" data-stage-alt="Animated overview of Livery">Concept Story</button>
+              <button class="stage-btn" data-stage-src="assets/live-walkthrough.gif" data-stage-alt="Live Meta-UI walkthrough over SSH">Live SSH Tour</button>
             </div>
           </div>
           <div class="stage-media">
-            <img id="hero-stage-img" src="/assets/demo.gif" alt="Animated overview of Livery" width="1120" height="630" />
+            <img id="hero-stage-img" src="assets/demo.gif" alt="Animated overview of Livery" width="1120" height="630" />
           </div>
         </div>
       </div>
@@ -181,7 +181,7 @@ $ liv drift                          # Inspect remote host edits
 $ liv pull --target ops@linux-node   # Adopt back into Catalog</pre>
           </div>
           <div class="feature-shot">
-            <img src="/assets/ui/two-way-sync.png" alt="Two-way sync modal pulling remote host edits into Catalog" loading="lazy" />
+            <img src="assets/ui/two-way-sync.png" alt="Two-way sync modal pulling remote host edits into Catalog" loading="lazy" />
           </div>
         </div>
 
@@ -203,7 +203,7 @@ launchers = ["claude-gateway", "claude-personal", "codex-zai"]
 include = ["playwright-qa", "release-audit"]</pre>
           </div>
           <div class="feature-shot">
-            <img src="/assets/ui/matrix.png" alt="Composable Matrix across environments and profiles" loading="lazy" />
+            <img src="assets/ui/matrix.png" alt="Composable Matrix across environments and profiles" loading="lazy" />
           </div>
         </div>
 
@@ -223,7 +223,7 @@ why = "Run unit tests and linters before declaring work done"
 - Run the project's relevant test and lint targets after edits.</pre>
           </div>
           <div class="feature-shot">
-            <img src="/assets/ui/prompts.png" alt="Ranked prompt fragments in Catalog" loading="lazy" />
+            <img src="assets/ui/prompts.png" alt="Ranked prompt fragments in Catalog" loading="lazy" />
           </div>
         </div>
 
@@ -240,7 +240,7 @@ $ liv herdr install-mod
 $ liv claude gateway --permission-mode plan</pre>
           </div>
           <div class="feature-shot">
-            <img src="/assets/ui/launcher-and-herdr.png" alt="liv CLI profile launcher and Herdr wizard" loading="lazy" />
+            <img src="assets/ui/launcher-and-herdr.png" alt="liv CLI profile launcher and Herdr wizard" loading="lazy" />
           </div>
         </div>
 
@@ -257,7 +257,7 @@ $ liv env bootstrap ops@linux-node --skillshare
 $ liv doctor</pre>
           </div>
           <div class="feature-shot">
-            <img src="/assets/ui/host-overview.png" alt="Host overview and unmanaged skill discovery" loading="lazy" />
+            <img src="assets/ui/host-overview.png" alt="Host overview and unmanaged skill discovery" loading="lazy" />
           </div>
         </div>
       </div>
@@ -274,28 +274,28 @@ $ liv doctor</pre>
 
         <div class="gallery-grid">
           <div class="gallery-item">
-            <img src="/assets/ui/environments.png" alt="Environments overview" loading="lazy" />
+            <img src="assets/ui/environments.png" alt="Environments overview" loading="lazy" />
             <div class="gallery-cap">
               <strong>Environments &amp; Fleet Health</strong>
               <span>Live sync badges, skill/MCP/hook/prompt counts, Herdr mod verification, and one-click fleet checks.</span>
             </div>
           </div>
           <div class="gallery-item">
-            <img src="/assets/ui/nested-skillshare-ssh.png" alt="SSH-tunneled nested Skillshare UI" loading="lazy" />
+            <img src="assets/ui/nested-skillshare-ssh.png" alt="SSH-tunneled nested Skillshare UI" loading="lazy" />
             <div class="gallery-cap">
               <strong>Live SSH-Tunneled Skillshare</strong>
               <span>Remote Linux <code>skillshare ui</code> proxied seamlessly inside Livery with automatic SSE drift detection.</span>
             </div>
           </div>
           <div class="gallery-item">
-            <img src="/assets/ui/git-diff.png" alt="Control plane Git diff modal" loading="lazy" />
+            <img src="assets/ui/git-diff.png" alt="Control plane Git diff modal" loading="lazy" />
             <div class="gallery-cap">
               <strong>Built-In Control Plane Git Diff</strong>
               <span>Inspect line-by-line TOML/Markdown diffs, revert individual files, or commit directly from the topbar.</span>
             </div>
           </div>
           <div class="gallery-item">
-            <img src="/assets/ui/launcher-and-herdr.png" alt="Multi-profile CLI launcher and Herdr mod" loading="lazy" />
+            <img src="assets/ui/launcher-and-herdr.png" alt="Multi-profile CLI launcher and Herdr mod" loading="lazy" />
             <div class="gallery-cap">
               <strong>Direct Launcher &amp; Herdr Mod</strong>
               <span>Zero-shim <code>liv &lt;harness&gt; &lt;profile&gt;</code> execution paired with Herdr's <code>Space → Profile → Launch</code> wizard.</span>
@@ -358,20 +358,20 @@ liv claude gateway --permission-mode plan</pre>
   <footer class="footer">
     <div class="container footer-inner">
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="/assets/livery-icon.png" alt="" width="22" height="22" style="border-radius:5px" />
+        <img src="assets/livery-icon.png" alt="" width="22" height="22" style="border-radius:5px" />
         <span><strong>livery</strong> (<code>liv</code>) · MIT License © bowd</span>
       </div>
       <div class="footer-links">
-        <a href="/docs/architecture.html">Architecture</a>
-        <a href="/docs/cli.html">CLI</a>
-        <a href="/docs/launchers-and-secrets.html">Launchers &amp; Herdr</a>
-        <a href="/docs/ui-and-skillshare.html">Meta-UI</a>
-        <a href="/docs/prompt-guidelines.html">Prompt Guide</a>
+        <a href="docs/architecture.html">Architecture</a>
+        <a href="docs/cli.html">CLI</a>
+        <a href="docs/launchers-and-secrets.html">Launchers &amp; Herdr</a>
+        <a href="docs/ui-and-skillshare.html">Meta-UI</a>
+        <a href="docs/prompt-guidelines.html">Prompt Guide</a>
         <a href="https://github.com/bowd/livery">GitHub</a>
       </div>
     </div>
   </footer>
 
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -154,7 +154,7 @@ def md_to_html(md_text: str) -> str:
 
 def render_doc_page(slug: str, title: str, body_html: str) -> str:
     sidebar_links = "\n".join(
-        f'<a href="/docs/{s}.html" class="{"active" if s == slug else ""}">{html.escape(t)}</a>'
+        f'<a href="{s}.html" class="{"active" if s == slug else ""}">{html.escape(t)}</a>'
         for s, t, _ in DOCS_PAGES
     )
     return f"""<!doctype html>
@@ -163,24 +163,24 @@ def render_doc_page(slug: str, title: str, body_html: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{html.escape(title)} · livery docs</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+  <link rel="icon" href="../favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
   <header class="nav-wrap">
     <div class="container nav">
-      <a href="/" class="brand">
-        <img src="/assets/livery-icon.png" alt="livery" width="28" height="28" />
+      <a href="../" class="brand">
+        <img src="../assets/livery-icon.png" alt="livery" width="28" height="28" />
         <span>livery</span>
       </a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="/#why">Why Livery</a>
-        <a href="/#features">Features</a>
-        <a href="/#gallery">Screenshots</a>
-        <a href="/#quickstart">Quick Start</a>
-        <a href="/docs/architecture.html" class="active">Docs</a>
+        <a href="../#why">Why Livery</a>
+        <a href="../#features">Features</a>
+        <a href="../#gallery">Screenshots</a>
+        <a href="../#quickstart">Quick Start</a>
+        <a href="architecture.html" class="active">Docs</a>
       </nav>
       <div class="nav-actions">
         <button id="theme-toggle" class="btn icon-toggle" aria-label="Toggle color theme" title="Switch theme"></button>
@@ -196,7 +196,7 @@ def render_doc_page(slug: str, title: str, body_html: str) -> str:
         {sidebar_links}
       </nav>
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
-        <a href="/" class="btn" style="width:100%;font-size:13px">← Back to Overview</a>
+        <a href="../" class="btn" style="width:100%;font-size:13px">← Back to Overview</a>
       </div>
     </aside>
 
@@ -209,14 +209,14 @@ def render_doc_page(slug: str, title: str, body_html: str) -> str:
     <div class="container footer-inner">
       <span><strong>livery</strong> (<code>liv</code>) · MIT License © bowd</span>
       <div class="footer-links">
-        <a href="/">Home</a>
+        <a href="../">Home</a>
         <a href="https://github.com/bowd/livery">GitHub</a>
         <a href="https://github.com/bowd/livery/releases">Releases</a>
       </div>
     </div>
   </footer>
 
-  <script src="/app.js"></script>
+  <script src="../app.js"></script>
 </body>
 </html>
 """
@@ -254,8 +254,8 @@ def main():
     # Render docs/*.md -> _site/docs/*.html (+ /docs/index.html redirect/copy)
     for slug, title, md_file in DOCS_PAGES:
         raw_md = (DOCS_SRC / md_file).read_text()
-        # Fix relative markdown links like (cli.md) -> (/docs/cli.html)
-        raw_md = re.sub(r"\(([a-z0-9-]+)\.md\)", r"(/docs/\1.html)", raw_md)
+        # Fix relative markdown links like (cli.md) -> (cli.html)
+        raw_md = re.sub(r"\(([a-z0-9-]+)\.md\)", r"(\1.html)", raw_md)
         body = md_to_html(raw_md)
         page_html = render_doc_page(slug, title, body)
         (OUT / "docs" / f"{slug}.html").write_text(page_html)
