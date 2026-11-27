@@ -87,7 +87,7 @@ Once you work across **a MacBook, headless Linux / NixOS servers over SSH, and m
 ### Shell Installer (macOS & Linux — SHA-256 verified)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/bowd/livery/main/install.sh | sh
+curl -fsSL https://liv.bowd.io/install.sh | sh
 ```
 
 Installs the static `liv` binary to `~/.local/bin/liv` without `sudo`. Install stock [`skillshare`](https://github.com/runkids/skillshare) alongside it for skill distribution and embedded dashboards:

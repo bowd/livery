@@ -23,7 +23,7 @@
 
   // Install command switcher
   const CMDS = {
-    shell: "curl -fsSL https://raw.githubusercontent.com/bowd/livery/main/install.sh | sh",
+    shell: "curl -fsSL https://liv.bowd.io/install.sh | sh",
     go: "CGO_ENABLED=0 go install github.com/bowd/livery/cmd/liv@latest",
     nix: "nix profile add github:bowd/livery",
     source: "git clone https://github.com/bowd/livery.git && cd livery && make install",

@@ -2,7 +2,7 @@
 # Livery (`liv`) installer — downloads a static, SHA-256 verified binary for macOS or Linux.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/bowd/livery/main/install.sh | sh
+#   curl -fsSL https://liv.bowd.io/install.sh | sh
 #   LIVERY_VERSION=v0.1.0 LIVERY_INSTALL_DIR=~/.local/bin sh install.sh
 set -eu
 
