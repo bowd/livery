@@ -79,4 +79,16 @@ What `liv herdr install-mod` sets up:
 2. **Profile**: Live-queries `liv list --json` on the target machine to present all `liv <harness> <profile>` profiles (`Claude · gateway`, `Claude · personal`, `Codex · zai`, saved presets, `knownAgents`, and shell). Press **`Cmd+Enter`** to quick-launch immediately with saved defaults.
 3. **Launch**: Set an initial task prompt, custom tab title, harness-aware mode chips (`Skip perms`, `Plan`, `Full auto`, `YOLO`, `Continue`, `Resume`), placement (`New tab`, `Background`, `Split`, `New worktree…`), and `agent-folders` filing.
 
+### Fleet-Wide Herdr Templates & Default Harness Overrides
+
+To sync `~/.config/herdr-core/templates/*.md` across every workstation and SSH server — and route Herdr's default `claude` and `codex` launches through `liv` (`hc run claude`, `hc run codex`, and Herdr's `programs.json` menu) — set `sync_herdr_templates` and `herdr_default_launchers` under `[defaults]` in `inventory.toml` (overridable per `[[target]]`):
+
+```toml
+[defaults]
+sync_herdr_templates = true
+herdr_default_launchers = { claude = "claude-gateway", codex = "codex-gateway" }
+```
+
+Livery will keep `<profile>.md` plus `claude.md` and `codex.md` synced in `~/.config/herdr-core/templates/` on every target (adding `--no-daemon` automatically for Codex templates), and `liv apps herdr sync` will also update `programs.claude.run` and `programs.codex.run` in `~/.config/herdr-app/programs.json`.
+
 Livery also manages **T3 Code** custom provider instances (`liv apps t3`, `liv secret import-t3`) and **OpenClaw** profiles (`liv apps openclaw`) from the CLI and **Catalog → Local Apps** tab.

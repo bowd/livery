@@ -127,6 +127,12 @@ func LoadHerdrOverview(programsFile, templatesDir string) HerdrOverview {
 					Color: strOf(m["color"]),
 					Run:   strSliceOf(m["run"]),
 				}
+				if hp.Name == "" {
+					hp.Name = k
+				}
+				if hp.Icon == "" {
+					hp.Icon = defaultHerdrIcon(k)
+				}
 				if b, ok := m["tint"].(bool); ok {
 					hp.Tint = &b
 				}
@@ -199,6 +205,36 @@ func DeleteHerdrProgram(programsFile, key string) error {
 	return writeJSONAtomic(programsFile, doc)
 }
 
+func herdrLauncherRunAndMeta(sp *model.LauncherSpec) (runCmd []string, name string, icon string, hcfg map[string]any) {
+	hcfg, _ = sp.Raw["herdr"].(map[string]any)
+	runCmd = []string{"liv", sp.Harness, sp.Profile}
+	if sp.Harness == "codex" {
+		noDaemon := true
+		if hcfg != nil {
+			if v, ok := hcfg["no_daemon"].(bool); ok {
+				noDaemon = v
+			}
+		}
+		if noDaemon {
+			runCmd = append(runCmd, "--no-daemon")
+		}
+	}
+	name = strOf(sp.Raw["description"])
+	icon = defaultHerdrIcon(sp.Harness)
+	if hcfg != nil {
+		if v := strOf(hcfg["name"]); v != "" {
+			name = v
+		}
+		if v := strOf(hcfg["icon"]); v != "" {
+			icon = v
+		}
+	}
+	if name == "" {
+		name = sp.ID
+	}
+	return runCmd, name, icon, hcfg
+}
+
 // SyncHerdrFromRepo syncs repo launcher specs into Herdr programs.json & templates using `liv <harness> <profile>`.
 func SyncHerdrFromRepo(repo *model.Repo, programsFile, templatesDir string) (int, error) {
 	if programsFile == "" {
@@ -223,44 +259,30 @@ func SyncHerdrFromRepo(repo *model.Repo, programsFile, templatesDir string) (int
 		ids = append(ids, id)
 	}
 	sort.Strings(ids)
+	aliasTarget := map[string]string{}
 	for _, id := range ids {
 		sp := repo.Launchers[id]
-		hcfg, _ := sp.Raw["herdr"].(map[string]any)
+		runCmd, name, icon, hcfg := herdrLauncherRunAndMeta(sp)
 		if hcfg != nil {
 			if en, ok := hcfg["enabled"].(bool); ok && !en {
 				continue
 			}
-		}
-		runCmd := []string{"liv", sp.Harness, sp.Profile}
-		if sp.Harness == "codex" {
-			noDaemon := true
-			if hcfg != nil {
-				if v, ok := hcfg["no_daemon"].(bool); ok {
-					noDaemon = v
-				}
-			}
-			if noDaemon {
-				runCmd = append(runCmd, "--no-daemon")
-			}
-		}
-		name := strOf(sp.Raw["description"])
-		icon := defaultHerdrIcon(sp.Harness)
-		if hcfg != nil {
-			if v := strOf(hcfg["name"]); v != "" {
-				name = v
-			}
-			if v := strOf(hcfg["icon"]); v != "" {
-				icon = v
-			}
-		}
-		if name == "" {
-			name = id
 		}
 		entry := map[string]any{"name": name, "icon": icon, "run": runCmd}
 		if hcfg != nil {
 			for _, k := range []string{"tint", "color", "tile"} {
 				if v, ok := hcfg[k]; ok {
 					entry[k] = v
+				}
+			}
+			if def, ok := hcfg["default_for_harness"].(bool); ok && def && sp.Harness != "" {
+				aliasTarget[sp.Harness] = id
+			} else if def, ok := hcfg["override_default"].(bool); ok && def && sp.Harness != "" {
+				aliasTarget[sp.Harness] = id
+			}
+			for _, al := range strSliceOf(hcfg["aliases"]) {
+				if al = strings.TrimSpace(al); al != "" {
+					aliasTarget[al] = id
 				}
 			}
 		}
@@ -271,6 +293,69 @@ func SyncHerdrFromRepo(repo *model.Repo, programsFile, templatesDir string) (int
 		_ = os.WriteFile(filepath.Join(templatesDir, id+".md"), []byte(tplContent), 0o644)
 		count++
 	}
+
+	// Resolve target-level herdr_default_launchers (local target wins, else first target with defaults).
+	var defaultMap map[string]string
+	for _, t := range repo.Targets {
+		if t.IsLocal() && len(t.HerdrDefaultLaunchers) > 0 {
+			defaultMap = t.HerdrDefaultLaunchers
+			break
+		}
+		if defaultMap == nil && len(t.HerdrDefaultLaunchers) > 0 {
+			defaultMap = t.HerdrDefaultLaunchers
+		}
+	}
+	for al, lid := range defaultMap {
+		al = strings.TrimSpace(al)
+		lid = strings.TrimSpace(lid)
+		if al != "" && lid != "" {
+			aliasTarget[al] = lid
+		}
+	}
+
+	if len(aliasTarget) > 0 {
+		aliasKeys := make([]string, 0, len(aliasTarget))
+		for al := range aliasTarget {
+			aliasKeys = append(aliasKeys, al)
+		}
+		sort.Strings(aliasKeys)
+		for _, al := range aliasKeys {
+			lid := aliasTarget[al]
+			if al == "" || al == lid {
+				continue
+			}
+			sp := repo.Launchers[lid]
+			if sp == nil {
+				continue
+			}
+			runCmd, name, icon, hcfg := herdrLauncherRunAndMeta(sp)
+			if al == sp.Harness {
+				// Field-by-field override on Herdr's built-in harness entry (preserves native display name, icon, match).
+				entry := map[string]any{}
+				if prev, ok := progs[al].(map[string]any); ok {
+					for k, v := range prev {
+						entry[k] = v
+					}
+				}
+				entry["run"] = runCmd
+				progs[al] = entry
+			} else {
+				entry := map[string]any{"name": name, "icon": icon, "run": runCmd}
+				if hcfg != nil {
+					for _, k := range []string{"tint", "color", "tile"} {
+						if v, ok := hcfg[k]; ok {
+							entry[k] = v
+						}
+					}
+				}
+				progs[al] = entry
+			}
+			tplContent := fmt.Sprintf("---\ncommand: %s\ndescription: %s\n---\n", strings.Join(runCmd, " "), name)
+			_ = os.WriteFile(filepath.Join(templatesDir, al+".md"), []byte(tplContent), 0o644)
+			count++
+		}
+	}
+
 	if err := writeJSONAtomic(programsFile, doc); err != nil {
 		return count, err
 	}

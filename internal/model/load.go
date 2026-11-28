@@ -225,6 +225,18 @@ func mergeStringMaps(base, over map[string]string) map[string]string {
 	return out
 }
 
+func cleanNonEmptyStringMap(m map[string]string) map[string]string {
+	out := make(map[string]string, len(m))
+	for k, v := range m {
+		k = strings.TrimSpace(k)
+		v = strings.TrimSpace(v)
+		if k != "" && v != "" {
+			out[k] = v
+		}
+	}
+	return out
+}
+
 func mergeUnique(a, b []string) []string {
 	seen := map[string]bool{}
 	var out []string
@@ -276,6 +288,7 @@ func (r *Repo) loadInventory() error {
 	defLinkMode := asStringMap(d, "link_mode")
 	defPromptFiles := asStringMap(d, "provider_prompt_files")
 	defHookFiles := mergeStringMaps(DefaultHookFiles, asStringMap(d, "provider_hook_files"))
+	defHerdrDefaults := asStringMap(d, "herdr_default_launchers")
 	defSSModes := asStringMap(d, "skillshare_target_modes")
 	defSSPaths := asStringMap(d, "skillshare_target_paths")
 
@@ -338,6 +351,7 @@ func (r *Repo) loadInventory() error {
 			HerdrProgramsFile:     asString(tm, "herdr_programs_file", asString(d, "herdr_programs_file", "~/.config/herdr-app/programs.json")),
 			SyncHerdrTemplates:    asBool(tm, "sync_herdr_templates", asBool(d, "sync_herdr_templates", false)),
 			HerdrTemplatesDir:     asString(tm, "herdr_templates_dir", asString(d, "herdr_templates_dir", "~/.config/herdr-core/templates")),
+			HerdrDefaultLaunchers: cleanNonEmptyStringMap(mergeStringMaps(defHerdrDefaults, asStringMap(tm, "herdr_default_launchers"))),
 			SyncT3Providers:       asBool(tm, "sync_t3_providers", asBool(d, "sync_t3_providers", false)),
 			T3SettingsFile:        asString(tm, "t3_settings_file", asString(d, "t3_settings_file", "~/.t3/userdata/settings.json")),
 			SkillshareRoot:        asString(tm, "skillshare_root", asString(d, "skillshare_root", "~/.local/share/agent-config/skillshare")),

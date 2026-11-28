@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/bowd/livery/internal/model"
+	"github.com/bowd/livery/internal/render"
 )
 
 func TestHerdrT3AndOpenClawEditors(t *testing.T) {
@@ -106,5 +107,87 @@ func TestHerdrT3AndOpenClawEditors(t *testing.T) {
 	}
 	if err := DeleteOpenClawMCP(ocHome, "work", "hyphae"); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestHerdrDefaultLauncherOverrides(t *testing.T) {
+	tmp := t.TempDir()
+	progFile := filepath.Join(tmp, "herdr-app", "programs.json")
+	tplDir := filepath.Join(tmp, "herdr-core", "templates")
+	repoRoot, err := filepath.Abs(filepath.Join("..", "..", "testdata", "demo-repo"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo, err := model.LoadRepo(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo.Launchers["codex-zai"] = &model.LauncherSpec{
+		ID:      "codex-zai",
+		Profile: "zai",
+		Harness: "codex",
+		Raw: map[string]any{
+			"id":          "codex-zai",
+			"harness":     "codex",
+			"description": "Codex ZAI",
+			"herdr":       map[string]any{"name": "Codex (ZAI)", "no_daemon": true},
+		},
+	}
+	repo.Profiles["base"].Launchers = append(repo.Profiles["base"].Launchers, "codex-zai")
+	for _, tgt := range repo.Targets {
+		tgt.SyncHerdrTemplates = true
+		tgt.HerdrTemplatesDir = "~/.config/herdr-core/templates"
+		tgt.HerdrDefaultLaunchers = map[string]string{
+			"claude": "claude-gateway",
+			"codex":  "codex-zai",
+		}
+	}
+
+	// 1. SyncHerdrFromRepo writes default claude/codex program overrides + claude.md/codex.md templates
+	n, err := SyncHerdrFromRepo(repo, progFile, tplDir)
+	if err != nil || n == 0 {
+		t.Fatalf("SyncHerdrFromRepo: n=%d err=%v", n, err)
+	}
+	hov := LoadHerdrOverview(progFile, tplDir)
+	byKey := map[string]HerdrProgram{}
+	for _, p := range hov.Programs {
+		byKey[p.Key] = p
+	}
+	if got := strings.Join(byKey["claude"].Run, " "); got != "liv claude gateway" {
+		t.Fatalf("expected claude default override 'liv claude gateway', got %q", got)
+	}
+	if got := strings.Join(byKey["codex"].Run, " "); got != "liv codex zai --no-daemon" {
+		t.Fatalf("expected codex default override 'liv codex zai --no-daemon', got %q", got)
+	}
+	for _, wantTpl := range []struct {
+		file string
+		cmd  string
+	}{
+		{"claude.md", "command: liv claude gateway"},
+		{"codex.md", "command: liv codex zai --no-daemon"},
+	} {
+		b, err := os.ReadFile(filepath.Join(tplDir, wantTpl.file))
+		if err != nil {
+			t.Fatalf("missing template %s: %v", wantTpl.file, err)
+		}
+		if !strings.Contains(string(b), wantTpl.cmd) {
+			t.Fatalf("template %s = %q, want %q", wantTpl.file, string(b), wantTpl.cmd)
+		}
+	}
+
+	// 2. RenderTarget emits ~/.config/herdr-core/templates/{claude,codex}.md for fleet SSH sync
+	rend, err := render.RenderTarget(repo, repo.Targets[0])
+	if err != nil {
+		t.Fatalf("RenderTarget: %v", err)
+	}
+	renderedPaths := map[string]string{}
+	for _, it := range rend.Items {
+		renderedPaths[it.Path] = string(it.Content)
+	}
+	if !strings.Contains(renderedPaths["~/.config/herdr-core/templates/claude.md"], "command: liv claude gateway") {
+		t.Fatalf("expected rendered claude.md template, got %q", renderedPaths["~/.config/herdr-core/templates/claude.md"])
+	}
+	if !strings.Contains(renderedPaths["~/.config/herdr-core/templates/codex.md"], "command: liv codex zai --no-daemon") {
+		t.Fatalf("expected rendered codex.md template, got %q", renderedPaths["~/.config/herdr-core/templates/codex.md"])
 	}
 }

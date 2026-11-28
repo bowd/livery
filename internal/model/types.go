@@ -66,13 +66,14 @@ type Target struct {
 	EmitShims          bool // default false in Livery (`liv <harness> <profile>` replaces per-profile shims)
 
 	// Optional Herdr & T3 Code integration
-	SyncHerdrMod       bool
-	SyncHerdrPrograms  bool
-	HerdrProgramsFile  string
-	SyncHerdrTemplates bool
-	HerdrTemplatesDir  string
-	SyncT3Providers    bool
-	T3SettingsFile     string
+	SyncHerdrMod          bool
+	SyncHerdrPrograms     bool
+	HerdrProgramsFile     string
+	SyncHerdrTemplates    bool
+	HerdrTemplatesDir     string
+	HerdrDefaultLaunchers map[string]string
+	SyncT3Providers       bool
+	T3SettingsFile        string
 
 	// Stock runkids/skillshare distribution settings (single skill backend in Livery)
 	SkillshareRoot        string

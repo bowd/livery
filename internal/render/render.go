@@ -501,12 +501,81 @@ func RenderEntries(repo *model.Repo, t *model.Target, mcps, hooks []string) ([]*
 	return items, nil
 }
 
+func herdrTemplateSpec(spec *model.LauncherSpec) (enabled bool, tname string, cmd string, desc string, aliases []string) {
+	hcfg, _ := spec.Raw["herdr"].(map[string]any)
+	enabled = true
+	if hcfg != nil {
+		if en, ok := hcfg["enabled"].(bool); ok && !en {
+			enabled = false
+		}
+		if tp, ok := hcfg["template"].(bool); ok && !tp {
+			enabled = false
+		}
+	}
+	tname = spec.ID
+	if hcfg != nil {
+		if v, ok := hcfg["template_name"].(string); ok && strings.TrimSpace(v) != "" {
+			tname = strings.TrimSpace(v)
+		}
+	}
+	cmd = fmt.Sprintf("liv %s %s", spec.Harness, spec.Profile)
+	if spec.Harness == "codex" {
+		noDaemon := true
+		if hcfg != nil {
+			if v, ok := hcfg["no_daemon"].(bool); ok {
+				noDaemon = v
+			}
+		}
+		if noDaemon {
+			cmd += " --no-daemon"
+		}
+	}
+	desc, _ = spec.Raw["description"].(string)
+	if hcfg != nil {
+		if v, ok := hcfg["name"].(string); ok && v != "" {
+			desc = v
+		}
+	}
+	if desc == "" {
+		desc = spec.ID
+	}
+	if hcfg != nil {
+		if def, ok := hcfg["default_for_harness"].(bool); ok && def && spec.Harness != "" {
+			aliases = append(aliases, spec.Harness)
+		} else if def, ok := hcfg["override_default"].(bool); ok && def && spec.Harness != "" {
+			aliases = append(aliases, spec.Harness)
+		}
+		switch raw := hcfg["aliases"].(type) {
+		case []any:
+			for _, v := range raw {
+				if s := strings.TrimSpace(fmt.Sprint(v)); s != "" {
+					aliases = append(aliases, s)
+				}
+			}
+		case []string:
+			for _, v := range raw {
+				if s := strings.TrimSpace(v); s != "" {
+					aliases = append(aliases, s)
+				}
+			}
+		}
+	}
+	return enabled, tname, cmd, desc, aliases
+}
+
 // RenderLaunchers emits launcher profile JSON files and assets (NO per-profile shims unless EmitShims=true).
 func RenderLaunchers(repo *model.Repo, t *model.Target, launcherIDs []string) ([]*Item, error) {
 	if len(launcherIDs) == 0 {
 		return nil, nil
 	}
 	lroot := strings.TrimRight(t.LauncherRoot, "/")
+	tdir := strings.TrimRight(t.HerdrTemplatesDir, "/")
+	if tdir == "" {
+		tdir = "~/.config/herdr-core/templates"
+	}
+	emittedTemplates := map[string]bool{}
+	aliasTarget := map[string]string{}
+	aliasSources := map[string][]string{}
 	var items []*Item
 	for _, lid := range launcherIDs {
 		spec := repo.Launchers[lid]
@@ -584,53 +653,54 @@ func RenderLaunchers(repo *model.Repo, t *model.Target, launcherIDs []string) ([
 			Sources: src, Content: specBytes, Mode: "644", Role: "launcher-spec", Entry: lid,
 		})
 		if t.SyncHerdrTemplates {
-			hcfg, _ := spec.Raw["herdr"].(map[string]any)
-			enabled := true
-			if hcfg != nil {
-				if en, ok := hcfg["enabled"].(bool); ok && !en {
-					enabled = false
-				}
-				if tp, ok := hcfg["template"].(bool); ok && !tp {
-					enabled = false
-				}
-			}
+			enabled, tname, cmd, desc, aliases := herdrTemplateSpec(spec)
 			if enabled {
-				tname := lid
-				if hcfg != nil {
-					if v, ok := hcfg["template_name"].(string); ok && v != "" {
-						tname = v
-					}
-				}
-				cmd := fmt.Sprintf("liv %s %s", spec.Harness, spec.Profile)
-				if spec.Harness == "codex" {
-					noDaemon := true
-					if hcfg != nil {
-						if v, ok := hcfg["no_daemon"].(bool); ok {
-							noDaemon = v
-						}
-					}
-					if noDaemon {
-						cmd += " --no-daemon"
-					}
-				}
-				desc, _ := spec.Raw["description"].(string)
-				if hcfg != nil {
-					if v, ok := hcfg["name"].(string); ok && v != "" {
-						desc = v
-					}
-				}
-				if desc == "" {
-					desc = lid
-				}
-				tdir := strings.TrimRight(t.HerdrTemplatesDir, "/")
-				if tdir == "" {
-					tdir = "~/.config/herdr-core/templates"
-				}
 				tcontent := fmt.Sprintf("---\ncommand: %s\ndescription: %s\n---\n", cmd, desc)
 				items = append(items, &Item{
 					Kind: "file", Path: tdir + "/" + tname + ".md",
 					Sources: src, Content: []byte(tcontent), Mode: "644", Role: "launcher-template", Entry: lid,
 				})
+				emittedTemplates[tname] = true
+				for _, al := range aliases {
+					if al != "" && al != tname {
+						aliasTarget[al] = lid
+						aliasSources[al] = src
+					}
+				}
+			}
+		}
+	}
+	if t.SyncHerdrTemplates {
+		for al, lid := range t.HerdrDefaultLaunchers {
+			al = strings.TrimSpace(al)
+			lid = strings.TrimSpace(lid)
+			if al != "" && lid != "" {
+				aliasTarget[al] = lid
+				aliasSources[al] = []string{"launchers/" + lid + ".toml", "inventory.toml"}
+			}
+		}
+		if len(aliasTarget) > 0 {
+			aliasNames := make([]string, 0, len(aliasTarget))
+			for al := range aliasTarget {
+				aliasNames = append(aliasNames, al)
+			}
+			sort.Strings(aliasNames)
+			for _, al := range aliasNames {
+				if emittedTemplates[al] {
+					continue
+				}
+				lid := aliasTarget[al]
+				spec := repo.Launchers[lid]
+				if spec == nil {
+					continue
+				}
+				_, _, cmd, desc, _ := herdrTemplateSpec(spec)
+				tcontent := fmt.Sprintf("---\ncommand: %s\ndescription: %s\n---\n", cmd, desc)
+				items = append(items, &Item{
+					Kind: "file", Path: tdir + "/" + al + ".md",
+					Sources: aliasSources[al], Content: []byte(tcontent), Mode: "644", Role: "launcher-template", Entry: al,
+				})
+				emittedTemplates[al] = true
 			}
 		}
 	}

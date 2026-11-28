@@ -75,8 +75,19 @@ func CheckRepo(root string) []string {
 				seenNames[name] = true
 			}
 		}
-		if _, err := repo.ResolveLaunchers(t, pids); err != nil {
+		resolvedLaunchers, err := repo.ResolveLaunchers(t, pids)
+		if err != nil {
 			errs = append(errs, err.Error())
+		}
+		for alias, lid := range t.HerdrDefaultLaunchers {
+			if !slugRe.MatchString(alias) {
+				errs = append(errs, fmt.Sprintf("%s: invalid herdr_default_launchers key %q", t.ID, alias))
+			}
+			if _, ok := repo.Launchers[lid]; !ok {
+				errs = append(errs, fmt.Sprintf("%s: herdr_default_launchers.%s references unknown launcher %q", t.ID, alias, lid))
+			} else if t.SyncHerdrTemplates && !containsStr(resolvedLaunchers, lid) {
+				errs = append(errs, fmt.Sprintf("%s: herdr_default_launchers.%s launcher %q is not enabled on this target", t.ID, alias, lid))
+			}
 		}
 	}
 
@@ -155,6 +166,13 @@ func CheckRepo(root string) []string {
 		}
 		if l.SessionGroup != "" && !slugRe.MatchString(l.SessionGroup) {
 			errs = append(errs, fmt.Sprintf("%s: invalid session_group %q (use letters, digits, ., _, -)", where, l.SessionGroup))
+		}
+		if hcfg, ok := l.Raw["herdr"].(map[string]any); ok {
+			for _, al := range asStringSlice(hcfg, "aliases") {
+				if !slugRe.MatchString(al) {
+					errs = append(errs, fmt.Sprintf("%s: invalid herdr.aliases entry %q", where, al))
+				}
+			}
 		}
 		checkNoSecretLiterals(l.Raw, where, "", &errs)
 	}
